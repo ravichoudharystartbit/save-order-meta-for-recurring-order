@@ -5,20 +5,20 @@
 require __DIR__ . '/vendor/autoload.php';
 use Twilio\Rest\Client;
 
-function remove_sp_chr($str)
+function remove_sp_chr($phone)
 {
-    $result = str_replace(array("#", "-", "(", ")", " ", "++10", "+1+", "+10", "+1", "+0"), '', $str);
+    $result = str_replace(array("#", "-", "(", ")", " "), '', $phone);
     return $result;
 }
-$Onfleetdata = file_get_contents('php://input');
-$Onfleetdata = json_decode($Onfleetdata);
+$OnfleetData = file_get_contents('php://input');
+$OnfleetData = json_decode($OnfleetData);
 
 //define empty variable   
 $customerPhone = '';
 $orderNumber = '';
-    if($Onfleetdata->data->task->metadata[0]->name == 'shopify_order_id' && $Onfleetdata->data->task->metadata[0]->value != '' ){
+    if($OnfleetData->data->task->metadata[0]->name == 'shopify_order_id' && $OnfleetData->data->task->metadata[0]->value != '' ){
             //get Onfleet current order id
-            $onfleetShopifyOrderId =  $Onfleetdata->data->task->metadata[0]->value;
+            $onfleetShopifyOrderId =  $OnfleetData->data->task->metadata[0]->value;
             //get Onfleet current order customer number
             $customePhone = 'xxxx-xxx-xxx';
             //get Onfleet current order number
@@ -39,17 +39,17 @@ $orderNumber = '';
             // Your Account SID and Auth Token from twilio.com/console
             $account_sid = 'twilio-sid';
             $auth_token = 'twilio-token';
-            $senderMessageId = 'twilio-message-id';
+            $senderMessage = 'twilio-message-id';
             $client = new Client($account_sid, $auth_token);
             
-            $orderConfimationText = "Your order #".$orderNumber." has been successfully delivered.";
+            $orderConfimation = "Your order #".$orderNumber." has been successfully delivered.";
             try{
                   echo $client->messages->create(
                         // Where to send a text message (your cell phone?)
                         $fromNumeber,
                         array(
-                            "messagingServiceSid" => $senderMessageId,
-                            'body' => $orderConfimationText
+                            "messagingServiceSid" => $senderMessage,
+                            'body' => $orderConfimation
                         )
                     );
               }catch(Exception $e){
