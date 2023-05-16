@@ -26,7 +26,7 @@ e) This code will help to send the Onfleet current order status to the customer 
 <p align="center">
   <img src="/onfleet-webhook.png" width="350">
 </p>
-***Onfleet Event LIst:-***
+***Onfleet Event List:-***
 <p align="center">
   <img src="/event-list-onfleet.png" width="350">
 </p>
