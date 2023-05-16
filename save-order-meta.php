@@ -15,18 +15,18 @@ $countryCode = '';
 $hmac_header = $_SERVER['HTTP_X_SHOPIFY_HMAC_SHA256'];
 $data = file_get_contents('php://input');
 $verified = verify_webhook($data, $hmac_header, "shared-secret");
-$webhookContent = json_decode($data);
-			if(isset($verified) && !empty($webhookContent)){  
+$webhookContents = json_decode($data);
+			if(isset($verified) && !empty($webhookContents)){  
 			  
-			   $deliveryDate = $webhookContent->created_at;
-			   if(isset($webhookContent->billing_address->country_code)){
-			      $countryCode = $webhookContent->billing_address->country_code; 
+			   $deliveryDate = $webhookContents->created_at;
+			   if(isset($webhookContents->billing_address->country_code)){
+			      $countryCode = $webhookContents->billing_address->country_code; 
 			    }
-			   if($webhookContent->tags != ''){
+			   if($webhookContents->tags != ''){
 			    	//check recurring order by recharge recurring order
-			        if (strpos($webhookContent->tags, 'Subscription Recurring Order') !== false ||  (strpos($webhookContent->tags, 'recurring_order') !== false)) {  
+			        if (strpos($webhookContents->tags, 'Subscription Recurring Order') !== false ||  (strpos($webhookContents->tags, 'recurring_order') !== false)) {  
 			        	//get recurring order customer id         
-			            $customerID =  $webhookContent->customer->id;
+			            $customerID =  $webhookContents->customer->id;
 			        }
 			    }
 			  
@@ -41,7 +41,7 @@ $webhookContent = json_decode($data);
 			                'Password' => 'xxxxx'
 			            );
 			//Call ShopifySDK
-			$shopify = new PHPShopify\ShopifySDK($config);
+			$shopifyData = new PHPShopify\ShopifySDK($config);
 
 			if($customerID != '' && isset($customerID)){
 
@@ -49,7 +49,7 @@ $webhookContent = json_decode($data);
 			    'status' => 'any'
 			);
 			//get customer detail           
-			$customeOrderData = $shopify->Customer($customerID)->Order->get($params);
+			$customeOrderData = $shopifyData->Customer($customerID)->Order->get($params);
 			$customerNoteAttrValue = '';
 			$customerId = '';
             $customeNoteVal = '';
@@ -85,22 +85,22 @@ $webhookContent = json_decode($data);
               }
            
 
-    $customerNoteAttrValue = $deliveryDate;
-     //order delivery update      
-    if( isset($customerNoteAttrValue) && $customerNoteAttrValue != ''){
+    $customerMetaKey = $deliveryDate;
+     //order meta update      
+    if( isset($customerMetaKey) && $customerMetaKey != ''){
          
-          $dateFormat = date("Y/m/d", strtotime($customerNoteAttrValue));
+          $dateformat = date("Y/m/d", strtotime($customerMetaKey));
           $updateDate = array (
            "note_attributes" => [
                   [
                       "name" => "mata-key",
-                      "value" => $dateFormat
+                      "value" => $dateformat
                   ]
               ]
            
            );
           //Save/Update Recurring Order Meta Value
-         $paramordesss = $shopify->Order($customeOrderData[0]['id'])->put($updateDate);
+         $paramordesss = $shopifyData->Order($customeOrderData[0]['id'])->put($updateDate);
          
     }
 
