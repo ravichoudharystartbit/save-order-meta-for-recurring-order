@@ -4,15 +4,14 @@
 require_once './vendor/autoload.php';
 use Onfleet\Onfleet;
 
-$data = file_get_contents('php://input');
-$webhookContentTaskFailed = json_decode($data);
-if(!empty($webhookContentTaskFailed)){ 
-   	 
-	$onfleet = new Onfleet("onfleet-api");
+$datawebhook = file_get_contents('php://input');
+$webhookTaskFailed = json_decode($datawebhook);
+if(!empty($webhookTaskFailed)){ 
+   $onfleetData = new Onfleet("onfleet-api");
     //CREATE TASK ON ONFLEET
-    if($onfleet->verifyKey() == true){       
+    if($onfleetData->verifyKey() == true){       
        //It will recreate the order on the onfleet                        
-       $onfleet->tasks->clone($webhookContentTaskFailed->actionContext->id);
+       $onfleetData->tasks->clone($webhookTaskFailed->actionContext->id);
     }              
 }
 ?>
