@@ -16,10 +16,9 @@ $hmac_header = $_SERVER['HTTP_X_SHOPIFY_HMAC_SHA256'];
 $data = file_get_contents('php://input');
 $verified = verify_webhook($data, $hmac_header, "shared-secret");
 $webhookContents = json_decode($data);
-			if(isset($verified) && !empty($webhookContents)){  
-			  
-			   $deliveryDate = $webhookContents->created_at;
-			   if(isset($webhookContents->billing_address->country_code)){
+	if(isset($verified) && !empty($webhookContents)){  
+		$deliveryDate = $webhookContents->created_at;
+		if(isset($webhookContents->billing_address->country_code)){
 			      $countryCode = $webhookContents->billing_address->country_code; 
 			    }
 			   if($webhookContents->tags != ''){
@@ -30,7 +29,7 @@ $webhookContents = json_decode($data);
 			        }
 			    }
 			  
-			}else{
+		}else{
 			   $customerID = ''; 
 			}
 			/*get all customer order*/
